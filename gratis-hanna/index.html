@@ -1,0 +1,220 @@
+<!doctype html>
+
+<!-- Made with all the love of a fika at Hanna's. :) -->
+
+<html>
+  <head>
+    <title>Gratis Hanna! -byTaylor</title>
+
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background: black
+                    url('img/background/green-glow.jpg')
+                    bottom left
+                    no-repeat;
+      }
+
+      .hidden {
+        display:none;
+      }
+
+      .description {
+        margin-left: 20px;
+
+        color: rgb(0, 160, 50); /* taken from the green lights in the background */
+        font-family: monospace;
+        font-size: 16px;
+      }
+      .description .smile {
+        color: yellow;
+      }
+      .description .heart {
+        color: red;
+      }
+
+      ul.switcher {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      ul.switcher li {
+        margin: 0;
+        padding: 0;
+      }
+
+      .frame {
+        position: fixed;
+        top: 100px;
+        left: 150px;
+      }
+      .frame::before {
+        /* based on http://stackoverflow.com/questions/18011747/add-css-inset-box-shadow-to-parent-element-over-the-top-of-a-child-image */
+        -moz-box-shadow: inset 0 0 20px 10px black;
+        -webkit-box-shadow: inset 0 0 20px 10px black;
+        box-shadow: inset 0 0 20px 10px black;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        content: "";
+      }
+      
+      img.workspace {
+        width: 380px;
+      }
+      img.paintsNThings {
+        width: 500px;
+      }
+      img.closeup {
+        width: 500px;
+      }
+    </style>
+
+    <script>
+      /* Util
+       * ==========================================================================
+       * TODO: Wrap the operated on parameter in an object, a la jQuery or
+       *       underscore.
+       *
+       *       Ex: util([1, 2, 3]).contains(1) === true
+       *           util(element).getClasses
+       */
+      var util = {
+          array: {
+              contains: function(arr, inIt) {
+                return arr.indexOf(inIt) !== -1;
+              }
+            , remove: function(arr, inIt) {
+                var from = arr.indexOf(inIt);
+
+                if (from !== -1) {
+                  var to = from + 1;
+                  
+                  // [Thanks John Resig](http://ejohn.org/blog/javascript-array-remove/)
+                  // MIT Licensed
+                  var rest = arr.slice((to || from) + 1 || arr.length);
+                  arr.length = from < 0 ? arr.length + from : from;
+                  arr = arr.push.apply(arr, rest);
+                }
+              }
+          }
+        , html: {
+              getClasses: function(elem) {
+                var classes = [];
+
+                var classAttr = elem.getAttribute('class');
+                if (classAttr !== null) {
+                  classes = classAttr.split(' ');
+                }
+
+                return classes;
+              }
+            , addClass: function(elem, className) {
+                var classes = this.getClasses(elem);
+                if (!util.array.contains(classes, className)) {
+                  classes.push(className);
+                  elem.setAttribute('class', classes.join(' '));
+                }
+              }
+            , removeClass: function(elem, className) {
+                var classes = this.getClasses(elem);
+                util.array.remove(classes, className);
+                elem.setAttribute('class', classes.join(' '));
+              }
+          }
+      };
+
+      /* Switcher
+       * ========================================================================== */
+      function Switcher(elem) {
+        this.elem = elem;
+        this.rate = parseInt(elem.getAttribute('data-rate'));
+        this.cur = -1;
+          // It gets bumped to 0 when next() is called for the first time.
+
+        this.next();
+      }
+
+      Switcher.prototype.next = function() {
+        // Need to check for children here, in case they are added or removed.
+        // Can't cache this in an instance variable.
+        var children = this.elem.children;
+
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          var state = new ShowHide(child);
+          state.off();
+        }
+
+        this.cur++;
+        if (this.cur >= children.length) {
+          this.cur = 0;
+        }
+        var state = new ShowHide(children[this.cur]);
+        state.on();
+
+        setTimeout(this.next.bind(this), this.rate);
+      }
+
+      Switcher.autoload = function() {
+        var switchers = [];
+
+        var switcherElems = document.getElementsByClassName("switcher");
+        for (var i = 0; i < switcherElems.length; i++) {
+          var switcherElem = switcherElems[i];
+          switchers.push(new Switcher(switcherElem));
+        }
+
+        return switchers;
+      }
+
+      /* States
+       * ------------------------------------------------------ */
+      function ShowHide(elem) {
+        this.elem = elem;
+      }
+      ShowHide.prototype.on = function() {
+        util.html.removeClass(this.elem, 'hidden');
+      }
+      ShowHide.prototype.off = function() {
+        util.html.addClass(this.elem, 'hidden');
+      }
+
+      /* Onload
+       * ========================================================================== */
+      var setup = function() {
+        Switcher.autoload();
+      }
+    </script>
+  </head>
+
+  <body onload="setup()">
+    <p class="description">
+      Gratis Hanna! <span class="smile">:D</span>  Jag kan inte sova ikväll, så
+      jag målat du en kaka.
+
+      <span class="heart">&lt;3</span> Taylor
+    </p>
+
+    <ul class="frame switcher" data-rate="4000">
+      <li>               <img class="workspace" src="img/cake/workspace-light.jpg" /></li>
+      <li class="hidden"><img class="workspace" src="img/cake/workspace-dark.jpg" /></li>
+      <li class="hidden"><img class="paintsNThings" src="img/cake/paintsNThings-light.jpg" /></li>
+      <li class="hidden"><img class="paintsNThings" src="img/cake/paintsNThings-dark.jpg" /></li>
+      <li class="hidden"><img class="closeup" src="img/cake/closerup.jpg" /></li>
+      <li class="hidden"><img class="closeup" src="img/cake/closeup.jpg" /></li>
+    </ul>
+
+  </body>
+
+</html>
