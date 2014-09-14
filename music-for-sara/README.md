@@ -15,7 +15,8 @@ Albums
 Deploy Steps
 ------------------------------------------------------------
  0. Checkout the project on the server or ftp it up or whatevs.
- 1. Put every album in a folder.
- 2. Zip it.
- 3. Put it in: `music-for-sara/download/just-fun-words-no-special-meaning-or-order.zip`.
- 4. Upload it to the server separately.
+ 1. Put every album in a folder.  Put all referenced songs in another.
+ 2. Zip 'em.
+ 3. Put them in: `music-for-sara/download/rock-out-miss-Dundee.zip` and
+    `music-for-sara/download/just-fun-words-no-special-meaning-or-order.zip`.
+ 4. Upload them to the server.  Scp seems to work well.
